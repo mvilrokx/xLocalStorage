@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Cross Domain localStorage library: An example</title>
+    <meta name="author" content="Mark Vilrokx">
+    <meta name="description" content="Example of usage of the Cross Domain localStorage library">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- <link rel="icon" href="favicon.png"> -->
+  </head>
+  <body>
+    <h2>Cross Domain localStorage library: An example</h2>
+
+    <script src="dist/xLocalStorage.js"></script>
+    <script>
+      const client = xLocalStorage.clientFactory()
+      client.connect('http://localhost:3002/iFrameServer.html')
+        .then(() => {
+          console.log('Connected Promise Fullfilled!')
+          // client.setItem({event: 'Connected Promise Fullfilled!'})
+          client.getItems(['address', 'name'])
+            .then((data) => data.map((value) => console.log(`>  ${value}`)))
+        })
+        .catch(() => console.log('Server unreachable!'))
+
+      client.on('connected', () => console.log('Connected Event detected'))
+      client.on('disconnected', () => console.log('Disonnected!'))
+
+      // Test: this does not really work; this event only signifies that the iframe was
+      // added (loaded) but NOT that the connection was made successfull
+      // document.addEventListener('x-local-storage-ready', (e) => {
+      //   console.log('x-local-storage-ready')
+      //   client.setItem({event: e.type})
+      //   // client.getItems(['event', 'name'], (data) => data.map((record) => console.log(record)))
+      //   client.getItems(['event', 'name'], (data) => console.log(`|| ${data}`))
+      // }, false)
+
+    </script>
+  </body>
+</html>
